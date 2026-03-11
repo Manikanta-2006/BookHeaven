@@ -30,10 +30,14 @@ const allowedOrigins = (process.env.CORS_ORIGINS || process.env.FRONTEND_URL || 
 const corsOptions = {
   origin: (origin, callback) => {
     const normalizedOrigin = normalizeOrigin(origin || '');
+    console.log(`CORS Request from: ${origin} (Normalized: ${normalizedOrigin})`);
+    
     if (!origin || allowedOrigins.length === 0 || allowedOrigins.includes(normalizedOrigin)) {
       callback(null, true);
       return;
     }
+    
+    console.warn(`CORS blocked for: ${origin}`);
     callback(null, false);
   },
   credentials: true,
