@@ -4,30 +4,19 @@ import { Link } from 'react-router-dom';
 import BookCard from '../components/BookCard';
 import SkeletonCard from '../components/SkeletonCard';
 import { ArrowRight } from 'lucide-react';
-import api from '../lib/api';
+import localBooks from '../data/books';
 
 const Home = () => {
-    const [books, setBooks] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [books, setBooks] = useState(localBooks.slice(0, 10));
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        const fetchBooks = async () => {
-            try {
-                const { data } = await api.get('/books?limit=10&paginate=false');
-                setBooks(data.items || data || []);
-                setLoading(false);
-            } catch (err) {
-                setError(err.message);
-                setLoading(false);
-            }
-        };
-        fetchBooks();
+        
     }, []);
 
     return (
         <div>
-            {}
             <section className="bg-primary-50 dark:bg-dark-surface overflow-hidden">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
@@ -70,7 +59,6 @@ const Home = () => {
                 </div>
             </section>
 
-            {}
             <section className="py-20 bg-white dark:bg-dark-bg">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-end mb-10">
@@ -99,7 +87,6 @@ const Home = () => {
                 </div>
             </section>
 
-            {}
             <section className="py-20 bg-gray-50 dark:bg-dark-surface">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                     <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-10">Popular Categories</h2>

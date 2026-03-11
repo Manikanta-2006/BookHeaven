@@ -3,11 +3,11 @@ import { useLocation } from 'react-router-dom';
 import BookCard from '../components/BookCard';
 import SkeletonCard from '../components/SkeletonCard';
 import { Filter } from 'lucide-react';
-import api from '../lib/api';
+import localBooks from '../data/books';
 
 const Shop = () => {
-    const [books, setBooks] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [books, setBooks] = useState(localBooks);
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
     const location = useLocation();
@@ -20,23 +20,25 @@ const Shop = () => {
     const categories = ['All', 'Fiction', 'Classic', 'Fantasy', 'Romance', 'Dystopian', 'Science Fiction', 'Mystery', 'History', 'Business', 'Technology'];
 
     useEffect(() => {
-        const fetchBooks = async () => {
-            try {
-                setLoading(true);
-                let url = `/books?keyword=${encodeURIComponent(keyword)}&paginate=false`;
-                if (selectedCategory && selectedCategory !== 'All') {
-                    url += `&category=${encodeURIComponent(selectedCategory)}`;
-                }
-                const { data } = await api.get(url);
-                setBooks(data.items || data || []);
-                setError(null);
-                setLoading(false);
-            } catch (err) {
-                setError(err.message);
-                setLoading(false);
+        setLoading(true);
+        setTimeout(() => {
+            let filtered = [...localBooks];
+
+            if (keyword) {
+                const searchLower = keyword.toLowerCase();
+                filtered = filtered.filter(b => 
+                    b.title.toLowerCase().includes(searchLower) || 
+                    b.author.toLowerCase().includes(searchLower)
+                );
             }
-        };
-        fetchBooks();
+
+            if (selectedCategory && selectedCategory !== 'All') {
+                filtered = filtered.filter(b => b.category === selectedCategory);
+            }
+
+            setBooks(filtered);
+            setLoading(false);
+        }, 300);
     }, [keyword, selectedCategory]);
 
     return (
